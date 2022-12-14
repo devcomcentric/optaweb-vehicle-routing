@@ -12,6 +12,12 @@ public class PlanningVehicle implements Standstill {
     private int capacity;
     private PlanningDepot depot;
 
+    private long startTime;
+    private long endTime;
+    private long breakStartTime;
+    private long breakEndTime;
+
+
     // Shadow variables
     private PlanningVisit nextVisit;
 
@@ -77,6 +83,38 @@ public class PlanningVehicle implements Standstill {
     @Override
     public PlanningLocation getLocation() {
         return depot.getLocation();
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+    }
+
+    public long getBreakStartTime() {
+        return breakStartTime;
+    }
+
+    public void setBreakStartTime(long breakStartTime) {
+        this.breakStartTime = breakStartTime;
+    }
+
+    public long getBreakEndTime() {
+        return breakEndTime;
+    }
+
+    public void setBreakEndTime(long breakEndTime) {
+        this.breakEndTime = breakEndTime;
     }
 
     @Override

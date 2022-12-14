@@ -4,11 +4,13 @@ import java.util.Objects;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Distance between two locations that can be persisted.
  */
 @Entity
+@Table(name = "distanceentity")
 class DistanceEntity {
 
     @EmbeddedId

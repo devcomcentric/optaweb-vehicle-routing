@@ -9,6 +9,29 @@ public class PlanningLocation {
     private final double latitude;
     private final double longitude;
     private final DistanceMap travelDistanceMap;
+    private long readyTime;
+    private long dueTime;
+    private long serviceDuration;
+    private long transitTime;
+    private long breakStartTime;
+    private long breakEndTime;
+    private String jobGroup;
+    private Integer forcedSequenceNo;
+
+    public PlanningLocation(long id, double latitude, double longitude, DistanceMap travelDistanceMap, long readyTime, long dueTime, long serviceDuration, long transitTime, long breakStartTime, long breakEndTime, String jobGroup, Integer forcedSequenceNo) {
+        this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.travelDistanceMap = Objects.requireNonNull(travelDistanceMap);
+        this.readyTime = readyTime;
+        this.dueTime = dueTime;
+        this.serviceDuration = serviceDuration;
+        this.transitTime = transitTime;
+        this.breakStartTime = breakStartTime;
+        this.breakEndTime = breakEndTime;
+        this.jobGroup = jobGroup;
+        this.forcedSequenceNo = forcedSequenceNo;
+    }
 
     PlanningLocation(long id, double latitude, double longitude, DistanceMap travelDistanceMap) {
         this.id = id;
@@ -37,6 +60,50 @@ public class PlanningLocation {
             return 0L;
         }
         return travelDistanceMap.distanceTo(location);
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public DistanceMap getTravelDistanceMap() {
+        return travelDistanceMap;
+    }
+
+    public long getReadyTime() {
+        return readyTime;
+    }
+
+    public long getDueTime() {
+        return dueTime;
+    }
+
+    public long getServiceDuration() {
+        return serviceDuration;
+    }
+
+    public long getTransitTime() {
+        return transitTime;
+    }
+
+    public long getBreakStartTime() {
+        return breakStartTime;
+    }
+
+    public long getBreakEndTime() {
+        return breakEndTime;
+    }
+
+    public String getJobGroup() {
+        return jobGroup;
+    }
+
+    public Integer getForcedSequenceNo() {
+        return forcedSequenceNo;
     }
 
     /**

@@ -2,9 +2,8 @@ package org.optaweb.vehiclerouting.plugin.planner.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
-import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.domain.variable.*;
+import org.optaweb.vehiclerouting.plugin.planner.domain.solver.ArrivalTimeUpdatingVariableListener;
 import org.optaweb.vehiclerouting.plugin.planner.weight.DepotAngleVisitDifficultyWeightFactory;
 
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleVisitDifficultyWeightFactory.class)
@@ -14,6 +13,9 @@ public class PlanningVisit implements Standstill {
     private long id;
     private PlanningLocation location;
     private int demand;
+
+    // Shadow variable
+    private Long arrivalTime;
 
     // Planning variable: changes during planning, between score calculations.
     @PlanningVariable(valueRangeProviderRefs = { "vehicleRange", "visitRange" },
@@ -116,6 +118,47 @@ public class PlanningVisit implements Standstill {
      */
     public boolean isLast() {
         return nextVisit == null;
+    }
+
+
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    @ShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class,
+            // Arguable, to adhere to API specs (although this works), nextVisit should also be a source,
+            // because this shadow must be triggered after nextVisit (but there is no need to be triggered by nextVisit)
+            sourceVariableName = "vehicle")
+    @ShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class, sourceVariableName = "previousCustomer")
+    public Long getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(Long arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    /**
+     * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public Long getDepartureTime() {
+        if (arrivalTime == null) {
+            return null;
+        }
+        return Math.max(arrivalTime, location.getReadyTime()) + location.getServiceDuration();
+    }
+
+    public boolean isArrivalBeforeReadyTime() {
+        return arrivalTime != null
+                && arrivalTime < location.getReadyTime();
+    }
+
+    public boolean isArrivalAfterDueTime() {
+        return arrivalTime != null
+                && location.getDueTime() < arrivalTime;
     }
 
     @Override
